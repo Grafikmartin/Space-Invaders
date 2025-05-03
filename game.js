@@ -1,4 +1,4 @@
-/* Space Invaders Mobile – Vanilla JS with Touch Controls */
+/* Space Invaders Mobile – FIXED Duplicate Variable, Works Desktop+Mobile */
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -64,7 +64,7 @@ function init() {
   bullets = [];
   enemyBullets = [];
   enemies = [];
-  keys = {};
+  keys = {}; // reset input map
   score = 0;
   lives = 3;
   level = 1;
@@ -205,8 +205,7 @@ function gameLoop(){
   requestAnimationFrame(gameLoop);
 }
 
-/* ===== Keyboard & Touch Controls ===== */
-const keys={};
+/* ===== Input Maps ===== */
 document.addEventListener('keydown',e=>{
   keys[e.key]=true;
   if(e.key===' ') { e.preventDefault(); fireBullet(); }
