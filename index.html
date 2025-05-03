@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Space Invaders – Mobile Ready</title>
+  <title>Space Invaders – Mobile Ready V4</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -13,7 +13,7 @@
 
     <!-- Overlay Screens -->
     <div id="overlay" class="overlay start">
-      <h1>SPACE INVADERS</h1>
+      <h1 class="title"><span>SPACE</span><br><span>INVADERS</span></h1>
       <button id="startBtn">START</button>
     </div>
 
@@ -40,9 +40,9 @@
 
   <!-- Mobile touch controls -->
   <div class="controls" id="mobileControls">
-      <button id="btnLeft" class="ctrl-btn">◄</button>
-      <button id="btnFire" class="ctrl-btn">⨀</button>
-      <button id="btnRight" class="ctrl-btn">►</button>
+      <button id="btnLeft" class="ctrl-btn" aria-label="Left">◄</button>
+      <button id="btnFire" class="ctrl-btn" aria-label="Fire">⨀</button>
+      <button id="btnRight" class="ctrl-btn" aria-label="Right">►</button>
   </div>
 
   <script src="game.js"></script>
