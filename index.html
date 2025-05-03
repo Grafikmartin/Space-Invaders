@@ -11,21 +11,25 @@
 </head>
 <body>
   <div class="console">
+    <!-- Spielfeld -->
     <canvas id="gameCanvas" width="480" height="640"></canvas>
+
+    <!-- Steuericons oben rechts -->
     <div class="top-controls">
-      <span class="material-icons ctrl-icon" id="fsBtn"     title="Fullscreen">fullscreen</span>
+      <span class="material-icons ctrl-icon" id="fsBtn" title="Fullscreen">fullscreen</span>
       <span class="material-icons ctrl-icon hidden" id="exitFsBtn" title="Exit fullscreen">fullscreen_exit</span>
-      <span class="material-icons ctrl-icon" id="pauseBtn"  title="Pause/Resume">pause</span>
-      <span class="material-icons ctrl-icon" id="soundBtn"  title="Sound On/Off">volume_up</span>
+      <span class="material-icons ctrl-icon" id="pauseBtn" title="Pause/Resume">pause</span>
+      <span class="material-icons ctrl-icon" id="soundBtn" title="Sound On/Off">volume_up</span>
     </div>
-    <!-- Overlay Screens -->
+
+    <!-- Overlays -->
     <div id="overlay" class="overlay start">
       <h1 class="title"><span>SPACE</span><br><span>INVADERS</span></h1>
       <button id="startBtn">START</button>
     </div>
 
     <div id="waveOverlay" class="overlay hidden">
-      <h1 id="waveMsg">WAVE 2</h1>
+      <h1 id="waveMsg">WAVE 1</h1>
     </div>
 
     <div id="gameOverOverlay" class="overlay hidden">
@@ -38,20 +42,26 @@
       <button id="restartWinBtn">RESTART</button>
     </div>
 
+    <!-- HUD: Highscore & Status -->
     <div class="hud">
-      <span id="scoreLabel">SCORE: 0</span>
-      <span id="livesLabel">LIVES: 3</span>
-      <span id="levelLabel">WAVE 1</span>
+      <div class="hud-left">
+        <span id="highLabel">HI: 0</span>
+        <span id="scoreLabel">SCORE: 0</span>
+      </div>
+      <span id="livesLabel">LIVES: 3</span>
+      <span id="levelLabel">WAVE 1</span>
     </div>
   </div>
 
-  <!-- Mobile touch controls -->
+  <!-- Mobile Touch-Controls -->
   <div class="controls" id="mobileControls">
-      <button id="btnLeft" class="ctrl-btn" aria-label="Left">◄</button>
-      <button id="btnFire" class="ctrl-btn" aria-label="Fire">⨀</button>
-      <button id="btnRight" class="ctrl-btn" aria-label="Right">►</button>
+    <button id="btnLeft" class="ctrl-btn" aria-label="Left">◄</button>
+    <button id="btnFire" class="ctrl-btn" aria-label="Fire">⨀</button>
+    <button id="btnRight" class="ctrl-btn" aria-label="Right">►</button>
   </div>
 
+  <!-- JS -->
   <script src="game.js"></script>
 </body>
+
 </html>

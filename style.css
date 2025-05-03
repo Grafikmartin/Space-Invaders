@@ -2,7 +2,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    user-select: none; 
+    user-select: none;
 }
 
 body {
@@ -81,7 +81,14 @@ button:hover {
     right: 8px;
     display: flex;
     justify-content: space-between;
-    font-size: 12px
+    font-size: 12px;
+}
+
+.hud-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    line-height: 1.1;
 }
 
 .controls {
@@ -102,24 +109,27 @@ button:hover {
 }
 
 /* --- top right controls --- */
-.top-controls{
-    position:absolute;
-    top:26px;
-    right:8px;
-    display:flex;
-    gap:12px;
-  }
-  .ctrl-icon{
-    font-size:24px;
-    cursor:pointer;
-    user-select:none;
-  }
-  .ctrl-icon.hidden{display:none}
-  
+.top-controls {
+    position: absolute;
+    top: 26px;
+    right: 8px;
+    display: flex;
+    gap: 12px;
+}
+
+.ctrl-icon {
+    font-size: 24px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.ctrl-icon.hidden {
+    display: none
+}
+
 
 @media (pointer:coarse) {
     .controls {
         display: flex
     }
 }
-
