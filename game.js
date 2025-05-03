@@ -222,7 +222,8 @@ function enterFs() { if (!document.fullscreenElement) document.documentElement.r
 function exitFs() { if (document.fullscreenElement) document.exitFullscreen(); }
 function toggleSound() {
   soundEnabled = !soundEnabled;
-  soundBtn.textContent = soundEnabled ? 'volume_up' : 'volume_off';
+  soundBtn.textContent = soundEnabled ? 'volume_off' : 'volume_up';
+
   // KEINE Steuerung von bgMusic hier!
 }
 
