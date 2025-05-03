@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Space Invaders – Retro</title>
-  <!-- Pixel‑Font von Google -->
+  <title>Space Invaders – Retro V2</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -12,25 +11,30 @@
   <div class="console">
     <canvas id="gameCanvas" width="480" height="640"></canvas>
 
-    <!-- UI -->
+    <!-- Overlay Screens -->
     <div id="overlay" class="overlay start">
-      <h1>SPACE INVADERS</h1>
+      <h1>SPACE INVADERS</h1>
       <button id="startBtn">START</button>
     </div>
 
+    <div id="waveOverlay" class="overlay hidden">
+      <h1 id="waveMsg">WAVE 2</h1>
+    </div>
+
     <div id="gameOverOverlay" class="overlay hidden">
-      <h1>GAME OVER</h1>
+      <h1>GAME OVER</h1>
       <button id="restartBtn">RESTART</button>
     </div>
 
     <div id="winOverlay" class="overlay hidden">
-      <h1>YOU WIN!</h1>
+      <h1>YOU WIN!</h1>
       <button id="restartWinBtn">RESTART</button>
     </div>
 
     <div class="hud">
-      <span id="scoreLabel">SCORE: 0</span>
-      <span id="livesLabel">LIVES: 3</span>
+      <span id="scoreLabel">SCORE: 0</span>
+      <span id="livesLabel">LIVES: 3</span>
+      <span id="levelLabel">WAVE 1</span>
     </div>
   </div>
 
