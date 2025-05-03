@@ -28,6 +28,7 @@ const fsBtn = document.getElementById('fsBtn');
 const exitFsBtn = document.getElementById('exitFsBtn');
 const pauseBtn = document.getElementById('pauseBtn');
 const soundBtn = document.getElementById('soundBtn');
+const musicBtn = document.getElementById('musicBtn');
 
 
 /* === Sounds === */
@@ -222,8 +223,9 @@ function exitFs() { if (document.fullscreenElement) document.exitFullscreen(); }
 function toggleSound() {
   soundEnabled = !soundEnabled;
   soundBtn.textContent = soundEnabled ? 'volume_up' : 'volume_off';
-  soundEnabled ? bgMusic.play().catch(() => { }) : bgMusic.pause();
+  // KEINE Steuerung von bgMusic hier!
 }
+
 document.addEventListener('fullscreenchange', () => {
   const on = !!document.fullscreenElement;
   fsBtn.classList.toggle('hidden', on); exitFsBtn.classList.toggle('hidden', !on);
@@ -253,3 +255,15 @@ restartBtn.addEventListener('click', restartGame); restartBtn.addEventListener('
 
 /* === Autoplay-Fallback === */
 window.addEventListener('load', () => { if (soundEnabled) bgMusic.play().catch(() => { }); });
+let musicPlaying = false;
+function toggleMusic() {
+  if (musicPlaying) {
+    bgMusic.pause();
+    musicBtn.textContent = 'music_note';
+  } else {
+    bgMusic.play().catch(() => {});
+    musicBtn.textContent = 'music_off';
+  }
+  musicPlaying = !musicPlaying;
+}
+musicBtn.addEventListener('click', toggleMusic);
