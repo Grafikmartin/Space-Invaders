@@ -1,4 +1,4 @@
-/* Space Invaders V2 – Vanilla JS, Blinking, Waves, Sprite Ships */
+/* Space Invaders Mobile – Vanilla JS with Touch Controls */
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -13,17 +13,18 @@ const restartWinBtn = document.getElementById('restartWinBtn');
 const scoreLabel = document.getElementById('scoreLabel');
 const livesLabel = document.getElementById('livesLabel');
 const levelLabel = document.getElementById('levelLabel');
+const btnLeft = document.getElementById('btnLeft');
+const btnRight = document.getElementById('btnRight');
+const btnFire = document.getElementById('btnFire');
 
-/* ===== Sprite Definitions =====
-   1 = Pixel, 0 = leer. Zeichnung wird gespiegelt, um symmetrische Flügel zu sparen. */
+/* ===== Sprites ===== */
 const PLAYER_SPRITE = [
   '0011100',
   '0111110',
   '1111111',
   '1111111',
   '0111110'
-]; // Nurflügler
-
+];
 const ENEMY_SPRITE = [
   '00100',
   '01110',
@@ -31,10 +32,9 @@ const ENEMY_SPRITE = [
   '10101',
   '01010'
 ];
+const PIXEL = 4;
 
-const PIXEL = 4; // Größe eines „Pixels“ im Canvas
-
-// Bounding box dimensions (for collisions)
+/* ===== Dimensions & Speed ===== */
 const PLAYER_WIDTH = PLAYER_SPRITE[0].length * PIXEL;
 const PLAYER_HEIGHT = PLAYER_SPRITE.length * PIXEL;
 
@@ -54,11 +54,10 @@ const ENEMY_START_Y = 60;
 let ENEMY_SPEED_X_BASE = 1;
 let ENEMY_SHOOT_CHANCE_BASE = 0.002;
 const ENEMY_STEP_DOWN = 20;
-
 const ENEMY_BULLET_SPEED = 3;
 
-let level = 1;
-let player, bullets, enemyBullets, enemies, keys, score, lives, gameOver, gameWin, hitFlash, invincible;
+/* ===== Game State ===== */
+let level, player, bullets, enemyBullets, enemies, keys, score, lives, gameOver, gameWin, hitFlash, invincible;
 
 function init() {
   player = { x: canvas.width/2-PLAYER_WIDTH/2, y: canvas.height-PLAYER_HEIGHT-10 };
@@ -77,9 +76,10 @@ function init() {
   updateHUD();
 }
 
+/* ===== Wave logic ===== */
 function spawnWave() {
   enemies = [];
-  const ENEMY_ROWS = ENEMY_ROWS_BASE + Math.floor(level/3); // jeder dritte Level mehr Zeile
+  const ENEMY_ROWS = ENEMY_ROWS_BASE + Math.floor(level/3);
   const speed = ENEMY_SPEED_X_BASE + (level-1)*0.3;
   const shootChance = ENEMY_SHOOT_CHANCE_BASE * (1 + (level-1)*0.4);
   for (let row=0;row<ENEMY_ROWS;row++){
@@ -89,42 +89,46 @@ function spawnWave() {
                     alive:true});
     }
   }
-  // store per‑wave params
   enemies.speedX = speed;
   enemies.shootChance = shootChance;
 }
 
+/* ===== HUD ===== */
 function updateHUD() {
   scoreLabel.textContent = `SCORE: ${score}`;
   livesLabel.textContent = `LIVES: ${lives}`;
   levelLabel.textContent = `WAVE ${level}`;
 }
 
-/* ===== Drawing helpers ===== */
-function drawPixelSprite(sprite,x,y) {
+/* ===== Drawing ===== */
+function drawPixelSprite(sprite,x,y){
   ctx.fillStyle='#33ff33';
-  sprite.forEach((row,rowIdx)=>{
-    [...row].forEach((bit,colIdx)=>{
+  sprite.forEach((row,r)=>{
+    [...row].forEach((bit,c)=>{
       if(bit==='1'){
-        ctx.fillRect(x+colIdx*PIXEL,y+rowIdx*PIXEL,PIXEL,PIXEL);
+        ctx.fillRect(x+c*PIXEL,y+r*PIXEL,PIXEL,PIXEL);
       }
     });
   });
 }
 function drawPlayer(){
-  if(invincible && Math.floor(hitFlash/4)%2===0) return; // blink off
+  if(invincible && Math.floor(hitFlash/4)%2===0) return;
   drawPixelSprite(PLAYER_SPRITE,player.x,player.y);
 }
-function drawEnemies(){
-  enemies.forEach(e=>{ if(e.alive) drawPixelSprite(ENEMY_SPRITE,e.x,e.y); });
-}
+function drawEnemies(){ enemies.forEach(e=>{ if(e.alive) drawPixelSprite(ENEMY_SPRITE,e.x,e.y); }); }
 function drawBullets(){
   ctx.fillStyle='#33ff33';
   bullets.forEach(b=>ctx.fillRect(b.x,b.y,BULLET_WIDTH,BULLET_HEIGHT));
   enemyBullets.forEach(b=>ctx.fillRect(b.x,b.y,BULLET_WIDTH,BULLET_HEIGHT));
 }
 
-/* ===== Movement ===== */
+/* ===== Mechanics ===== */
+function rectIntersect(a,aw,ah,b,bw,bh){
+  return a.x<b.x+bw&&a.x+aw>b.x&&a.y<b.y+bh&&a.y+ah>b.y;
+}
+function fireBullet(){
+  bullets.push({x:player.x+PLAYER_WIDTH/2-BULLET_WIDTH/2,y:player.y-BULLET_HEIGHT});
+}
 function movePlayer(){
   if(keys['ArrowLeft']) player.x-=PLAYER_SPEED;
   if(keys['ArrowRight']) player.x+=PLAYER_SPEED;
@@ -137,17 +141,17 @@ function moveBullets(){
   enemyBullets=enemyBullets.filter(b=>b.y<canvas.height);
 }
 function moveEnemies(){
-  let hitEdge=false;
+  let edge=false;
   enemies.forEach(e=>{
     if(!e.alive) return;
     e.x+=enemies.speedX;
-    if(e.x<=0||e.x+ENEMY_WIDTH>=canvas.width) hitEdge=true;
+    if(e.x<=0||e.x+ENEMY_WIDTH>=canvas.width) edge=true;
   });
-  if(hitEdge){
+  if(edge){
     enemies.speedX*=-1;
     enemies.forEach(e=>{
       e.y+=ENEMY_STEP_DOWN;
-      if(e.alive && e.y+ENEMY_HEIGHT>=player.y) gameOver=true;
+      if(e.alive&&e.y+ENEMY_HEIGHT>=player.y) gameOver=true;
     });
   }
 }
@@ -159,57 +163,38 @@ function enemyActions(){
     }
   });
 }
-function rectIntersect(a,aw,ah,b,bw,bh){
-  return a.x<b.x+bw&&a.x+aw>b.x&&a.y<b.y+bh&&a.y+ah>b.y;
-}
-function fireBullet(){
-  bullets.push({x:player.x+PLAYER_WIDTH/2-BULLET_WIDTH/2,y:player.y-BULLET_HEIGHT});
-}
-
-/* ===== Game loop ===== */
 function collisions(){
-  // player bullets vs enemies
   bullets.forEach(b=>{
     enemies.forEach(e=>{
-      if(e.alive && rectIntersect(b,BULLET_WIDTH,BULLET_HEIGHT,e,ENEMY_WIDTH,ENEMY_HEIGHT)){
+      if(e.alive&&rectIntersect(b,BULLET_WIDTH,BULLET_HEIGHT,e,ENEMY_WIDTH,ENEMY_HEIGHT)){
         e.alive=false;b.hit=true;score+=100;
       }
     });
   });
   bullets=bullets.filter(b=>!b.hit);
-  // enemy bullets vs player
   if(!invincible){
     enemyBullets.forEach(b=>{
       if(rectIntersect(b,BULLET_WIDTH,BULLET_HEIGHT,player,PLAYER_WIDTH,PLAYER_HEIGHT)){
-        b.hit=true;
-        lives--;invincible=true;hitFlash=60; // 1 Sek Blinken
-        if(lives<=0) gameOver=true;
+        b.hit=true;lives--;invincible=true;hitFlash=60;if(lives<=0) gameOver=true;
       }
     });
   }
   enemyBullets=enemyBullets.filter(b=>!b.hit);
 }
 function handleBlink(){
-  if(invincible){
-    hitFlash--;
-    if(hitFlash<=0){
-      invincible=false;
-    }
-  }
+  if(invincible){hitFlash--;if(hitFlash<=0)invincible=false;}
 }
 function checkWaveClear(){
   if(enemies.every(e=>!e.alive)){
     level++;
-    if(level>5){ // nach 5 Wellen gewinnen
-      gameWin=true; return;
-    }
-    // Show wave overlay kurz
-    waveMsg.textContent=`WAVE ${level}`;
-    waveOverlay.classList.remove('hidden');
+    if(level>5){gameWin=true;return;}
+    waveMsg.textContent=`WAVE ${level}`;waveOverlay.classList.remove('hidden');
     setTimeout(()=>waveOverlay.classList.add('hidden'),1200);
     spawnWave();
   }
 }
+
+/* ===== Game Loop ===== */
 function gameLoop(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   movePlayer();moveBullets();moveEnemies();enemyActions();
@@ -219,12 +204,26 @@ function gameLoop(){
   if(gameWin){winOverlay.classList.remove('hidden');return;}
   requestAnimationFrame(gameLoop);
 }
-/* ===== Input ===== */
+
+/* ===== Keyboard & Touch Controls ===== */
+const keys={};
 document.addEventListener('keydown',e=>{
   keys[e.key]=true;
-  if(e.key===' '){e.preventDefault();fireBullet();}
+  if(e.key===' ') { e.preventDefault(); fireBullet(); }
 });
-document.addEventListener('keyup',e=>{keys[e.key]=false;});
+document.addEventListener('keyup',e=>{ keys[e.key]=false; });
+
+function bindButton(btn, key){
+  btn.addEventListener('pointerdown', e=>{ e.preventDefault(); keys[key]=true; if(key===' '){ fireBullet(); }});
+  btn.addEventListener('pointerup',   e=>{ e.preventDefault(); keys[key]=false; });
+  btn.addEventListener('pointercancel',e=>{ keys[key]=false; });
+  btn.addEventListener('pointerleave', e=>{ keys[key]=false; });
+}
+bindButton(btnLeft,'ArrowLeft');
+bindButton(btnRight,'ArrowRight');
+bindButton(btnFire,' ');
+
+/* ===== Start / Restart ===== */
 startBtn.addEventListener('click',()=>{
   overlay.classList.add('hidden');init();requestAnimationFrame(gameLoop);
 });
