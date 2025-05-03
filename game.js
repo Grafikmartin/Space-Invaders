@@ -55,6 +55,9 @@ const ENEMY_ROWS_BASE = 4, ENEMY_COLS_BASE = 8;
 const ENEMY_H_SPACING = 10, ENEMY_V_SPACING = 20, ENEMY_START_Y = 60;
 const ENEMY_STEP_DOWN = 20, ENEMY_BULLET_SPEED = 3;
 
+const reloadBtn = document.getElementById('reloadBtn');
+
+
 let ENEMY_SPEED_X_BASE = 1, ENEMY_SHOOT_CHANCE_BASE = .002;
 
 /* === Game State === */
@@ -192,12 +195,18 @@ function handleBlink() { if (invincible && --hitFlash <= 0) invincible = false; 
 function checkWaveClear() {
   if (enemies.every(e => !e.alive)) {
     level++;
+    if (level > 19) {
+      saveHighscore();
+      winOverlay.classList.remove('hidden');
+      return;
+    }
     waveMsg.textContent = `WAVE ${level}`;
     waveOverlay.classList.remove('hidden');
     setTimeout(() => waveOverlay.classList.add('hidden'), 1200);
     spawnWave();
   }
 }
+
 
 /* === Game Loop === */
 function gameLoop() {
@@ -268,3 +277,5 @@ function toggleMusic() {
   musicPlaying = !musicPlaying;
 }
 musicBtn.addEventListener('click', toggleMusic);
+
+reloadBtn.addEventListener('click', () => location.reload());
