@@ -189,7 +189,7 @@ function collisions(){
 function handleBlink(){ if(invincible && --hitFlash<=0) invincible=false; }
 function checkWaveClear(){
   if(enemies.every(e=>!e.alive)){
-    level++; if(level>5){gameWin=true;return;}
+    level++; if(level>15){gameWin=true;return;}
     waveMsg.textContent=`WAVE ${level}`;
     waveOverlay.classList.remove('hidden');
     setTimeout(()=>waveOverlay.classList.add('hidden'),1200);
